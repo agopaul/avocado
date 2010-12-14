@@ -190,6 +190,10 @@ class AvocadoTable{ // implements ArrayIterator
 										$FieldArr['nullable'] ? 'NULL' : 'NOT NULL'
 									);
 				break;
+				
+			default:
+					throw new AvocadoException("Unknow action");
+				break;
 		}
 	}
 	

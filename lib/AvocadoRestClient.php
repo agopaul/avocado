@@ -35,16 +35,16 @@ class AvocadoRestClient{
 			$RemoteTables = json_decode($Result, true);
 			$LocalTables = $AvoDb->toArray();
 			
-			if($RemoteTables && $LocalTables){
-				$this->compareSchemas($LocalTables, $RemoteTables);
-				$this->compareSchemas($RemoteTables, $LocalTables);
+			if(!$RemoteTables) throw new AvocadoException("Bad or empty response from REST server");
 				
-				var_dump($LocalTables);
-				var_dump($RemoteTables);
-			}
+			$this->compareSchemas($LocalTables, $RemoteTables);
+			$this->compareSchemas($RemoteTables, $LocalTables);
+			
+			var_dump($LocalTables);
+			var_dump($RemoteTables);
 			
 		}
-		else echo curl_error($Curl);
+		else throw new AvocadoException("Error opening URL: ".curl_error($Curl));
 		curl_close($Curl);
 	}
 	
