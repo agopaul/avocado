@@ -15,7 +15,7 @@ class Avocado{
 	 * @author Paolo Agostinetto <paul.ago@gmail.com>
 	 **/
 	public static function autoload(){
-		spl_autoload_register(array(self, "register"));
+		spl_autoload_register(array(__CLASS__, "register")); // Can't use self on PHP classbacks
 	}
 	
 	/**
