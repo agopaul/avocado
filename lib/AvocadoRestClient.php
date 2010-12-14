@@ -31,20 +31,24 @@ class AvocadoRestClient{
 		curl_setopt($Curl, CURLOPT_HEADER, 0);
 		curl_setopt($Curl, CURLOPT_RETURNTRANSFER, true);
 		if($Result = curl_exec($Curl)){
+			
 			$RemoteTables = json_decode($Result, true);
 			$LocalTables = $AvoDb->toArray();
-			//array_udiff_assoc($LocalTables, $RemoteTables, array($this, "compareArrays"));
-			$this->compareSchemas($LocalTables, $RemoteTables);
-			$this->compareSchemas($RemoteTables, $LocalTables);
 			
-			var_dump($LocalTables);
-			var_dump($RemoteTables);
+			if($RemoteTables && $LocalTables){
+				$this->compareSchemas($LocalTables, $RemoteTables);
+				$this->compareSchemas($RemoteTables, $LocalTables);
+				
+				var_dump($LocalTables);
+				var_dump($RemoteTables);
+			}
+			
 		}
 		else echo curl_error($Curl);
 		curl_close($Curl);
 	}
 	
-	protected function compareSchemas($Schema1, $Schema2){
+	protected function compareSchemas(array $Schema1, array $Schema2){
 		foreach($Schema1 as $TableName=>$Table){
 			if($Schema2[$TableName]){
 				foreach($Table as $FieldName=>$Field){
