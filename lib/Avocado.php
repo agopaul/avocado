@@ -177,7 +177,7 @@ class AvocadoTable{ // implements ArrayIterator
 										$Field->getName(),
 										$FieldArr['type'],
 										$FieldArr['length'],
-										$FieldArr['nullable'] ? 'NULL' : 'NOT NULL',
+										$FieldArr['nullable'] ? 'NULL' : 'NOT NULL'
 									);
 				break;
 				
@@ -187,7 +187,7 @@ class AvocadoTable{ // implements ArrayIterator
 										$Field->getName(),
 										$FieldArr['type'],
 										$FieldArr['length'],
-										$FieldArr['nullable'] ? 'NULL' : 'NOT NULL',
+										$FieldArr['nullable'] ? 'NULL' : 'NOT NULL'
 									);
 				break;
 		}
