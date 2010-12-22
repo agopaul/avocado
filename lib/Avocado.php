@@ -96,7 +96,21 @@ class AvocadoSchema{ // aka AvocadoTables
 	public function toJson(){
 		return json_encode($this->toArray());
 	}
-	
+
+	/**
+	 * Return the whole schema sql
+	 *
+	 * @return string
+	 * @author paul
+	 **/
+	public function toSql(){
+		$Sql = "";
+		foreach($this->getTables() as $Table){
+			$Sql .= $Table->toSql() . ";\n";
+		}
+		return $Sql;
+	}
+
 }
 
 /**
