@@ -137,6 +137,8 @@ class AvocadoTable{ // implements ArrayIterator
 		if(!$Tablename) throw new AvocadoException("Tablename can't be null");
 		$this->Tablename = $Tablename;
 		$this->Fields = $Fields;
+		foreach($this->Fields as $Field)
+			$Field->setTable($this);
 	}
 	
 	public function getName(){
@@ -175,42 +177,6 @@ class AvocadoTable{ // implements ArrayIterator
 		return $Fields;
 	}
 	
-	/**
-	 * Return sql to create/modify field
-	 *
-	 * @return string
-	 * @author paul
-	 **/
-	function toSql($FieldName, $Action=self::ADD_FIELD){
-		$Field = $this->getFieldByName($FieldName);
-		$FieldArr = $Field->toArray();
-		switch($Action){
-			case self::ADD_FIELD:
-					return sprintf("ALTER TABLE %s ADD %s %s(%s) %s;", 
-										$this->getName(),
-										$Field->getName(),
-										$FieldArr['type'],
-										$FieldArr['length'],
-										$FieldArr['nullable'] ? 'NULL' : 'NOT NULL'
-									);
-				break;
-				
-			case self::UPDATE_FIELD:
-					return sprintf("ALTER TABLE %s MODIFY %s %s(%s) %s;", 
-										$this->getName(),
-										$Field->getName(),
-										$FieldArr['type'],
-										$FieldArr['length'],
-										$FieldArr['nullable'] ? 'NULL' : 'NOT NULL'
-									);
-				break;
-				
-			default:
-					throw new AvocadoException("Unknow action");
-				break;
-		}
-	}
-	
 }
 
 /**
@@ -221,7 +187,7 @@ class AvocadoTable{ // implements ArrayIterator
  **/
 class AvocadoField{
 	
-	protected $FieldName, $Type, $Nullable, $Length;
+	protected $FieldName, $Type, $Nullable, $Length, $Table;
 	
 	/**
 	 * Set field properties
@@ -247,6 +213,26 @@ class AvocadoField{
 	public function getName(){
 		return $this->FieldName;
 	}
+
+	/**
+	 * Get the table
+	 *
+	 * @return AvocadoTable
+	 * @author paul
+	 **/
+	function getTable(){
+		return $this->Table;
+	}
+
+	/**
+	 * Set the table
+	 *
+	 * @return void
+	 * @author paul
+	 **/
+	function setTable(AvocadoTable $Table){
+		$this->Table = $Table;
+	}
 	
 	/**
 	 * Return field in array form
@@ -261,6 +247,42 @@ class AvocadoField{
 				'nullable' => $this->Nullable,
 				'length' => $this->Length,
 			);
+	}
+
+	/**
+	 * Return sql to create/modify field
+	 *
+	 * @return string
+	 * @author paul
+	 **/
+	function toSql($Action=self::ADD_FIELD){
+		if(!$this->Table) throw new AvocadoException("You must set the Table");
+
+		switch($Action){
+			case self::ADD_FIELD:
+					return sprintf("ALTER TABLE %s ADD %s %s(%s) %s;", 
+										$this->Table->getName(),
+										$this->getName(),
+										$this->Type,
+										$this->Length,
+										$this->Nullable ? 'NULL' : 'NOT NULL'
+									);
+				break;
+				
+			case self::UPDATE_FIELD:
+					return sprintf("ALTER TABLE %s MODIFY %s %s(%s) %s;", 
+										$this->Table->getName(),
+										$this->getName(),
+										$this->Type,
+										$this->Length,
+										$this->Nullable ? 'NULL' : 'NOT NULL'
+									);
+				break;
+				
+			default:
+					throw new AvocadoException("Unknow action");
+				break;
+		}
 	}
 	
 }
