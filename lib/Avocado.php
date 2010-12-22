@@ -74,7 +74,10 @@ class AvocadoSchema{ // aka AvocadoTables
 			$Fields = array();
 			foreach($this->Db->query("SHOW COLUMNS FROM $Tablename") as $Field){
 				preg_match("/(\w+)((\([\d]+)\))?/", $Field['Type'], $Matches);
-				$Fields[] = new AvocadoField($Field['Field'], $Matches[1], $Field['Null']=='YES'?true:false, isset($Matches[2])?(int)$Matches[2]:null);
+				$Fields[] = new AvocadoField($Field['Field'],
+											$Matches[1],
+											$Field['Null']=='YES'?true:false,
+											isset($Matches[2])?(int)$Matches[2]:null);
 			}		
 			
 			$this->Tables[] = new AvocadoTable($Tablename, $Fields);
@@ -85,11 +88,7 @@ class AvocadoSchema{ // aka AvocadoTables
 	public function toArray(){
 		$Tables = array();
 		foreach($this->getTables() as $Table){
-			$Fields = array();
-			foreach($Table->getFields() as $Field){
-				$Fields[$Field->getName()] = $Field->toArray();
-			}
-			$Tables[$Table->getName()] = $Fields;
+			$Tables[$Table->getName()] = $Table->toArray();
 		}
 		return $Tables;
 	}
@@ -97,6 +96,7 @@ class AvocadoSchema{ // aka AvocadoTables
 	public function toJson(){
 		return json_encode($this->toArray());
 	}
+
 }
 
 /**
@@ -250,6 +250,5 @@ class AvocadoField{
 	}
 	
 }
-
 
 ?>
