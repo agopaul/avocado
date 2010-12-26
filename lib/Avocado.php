@@ -121,16 +121,6 @@ class AvocadoSchema{ // aka AvocadoTables
  **/
 class AvocadoTable{ // implements ArrayIterator
 	
-	/**
-	 * Add field option
-	 **/
-	const ADD_FIELD = "ADD";
-	
-	/**
-	 * Update field option
-	 **/
-	const UPDATE_FIELD = "UPD";
-	
 	protected $Tablename, $Fields;
 	
 	function __construct($Tablename, array $Fields){
@@ -176,6 +166,20 @@ class AvocadoTable{ // implements ArrayIterator
 		}
 		return $Fields;
 	}
+
+	/**
+	 * Return the table SQL
+	 *
+	 * @return string
+	 * @author paul
+	 **/
+	public function toSql(){
+		$Sql = "CREATE TABLE {$this->getName()}(\n";
+		foreach($this->getFields() as $Field){
+			$Sql .= $Field->toSql(AvocadoField::ADD_TABLE_FIELD) . ",\n";
+		}
+		return $Sql . ")";
+	}
 	
 }
 
@@ -187,6 +191,21 @@ class AvocadoTable{ // implements ArrayIterator
  **/
 class AvocadoField{
 	
+	/**
+	 * Add field option
+	 **/
+	const ADD_TABLE_FIELD = "ADD_T";
+
+	/**
+	 * Add field option
+	 **/
+	const ADD_FIELD = "ADD";
+	
+	/**
+	 * Update field option
+	 **/
+	const UPDATE_FIELD = "UPD";
+
 	protected $FieldName, $Type, $Nullable, $Length, $Table;
 	
 	/**
@@ -275,6 +294,15 @@ class AvocadoField{
 										$this->getName(),
 										$this->Type,
 										$this->Length,
+										$this->Nullable ? 'NULL' : 'NOT NULL'
+									);
+				break;
+
+			case self::ADD_TABLE_FIELD:
+					return sprintf("'%s' %s%s %s",
+										$this->getName(),
+										$this->Type,
+										$this->Length ? "($this->Length)" : null,
 										$this->Nullable ? 'NULL' : 'NOT NULL'
 									);
 				break;
