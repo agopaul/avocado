@@ -57,7 +57,7 @@ class AvocadoSchema{ // aka AvocadoTables
 	
 	function __construct(PDO $Db){
 		$this->Db = $Db;
-		$this->scanTables();
+		$this->fromDb();
 	}
 	
 	public static function getInstance(PDO $Db){
@@ -68,7 +68,7 @@ class AvocadoSchema{ // aka AvocadoTables
 		return $this->Tables;
 	}
 	
-	protected function scanTables(){
+	protected function fromDb(){
 		foreach($this->Db->query("SHOW TABLES") as $Table){
 			$Tablename = $Table[0];
 			$Fields = array();
