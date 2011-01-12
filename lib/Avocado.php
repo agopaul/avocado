@@ -112,11 +112,7 @@ class AvocadoSchema{ // aka AvocadoTables
 	}
 	
 	public function toArray(){
-		$Tables = array();
-		foreach($this->getTables() as $Table){
-			$Tables[$Table->getName()] = $Table->toArray();
-		}
-		return $Tables;
+		return $this->getTables();
 	}
 	
 	public function toJson(){
