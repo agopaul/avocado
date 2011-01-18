@@ -12,6 +12,8 @@ class AvocadoSchema{ // aka AvocadoTables
 	protected $Tables;
 	
 	function __construct(PDO $Db=null, array $Arr=null){
+		$this->Tables = array();
+
 		if($Db && !$Arr)
 			$this->fromDb($Db);
 		elseif(!$Db && $Arr)
@@ -46,7 +48,6 @@ class AvocadoSchema{ // aka AvocadoTables
 											$Field['Null']=='YES'?true:false,
 											isset($Matches[2])?(int)$Matches[2]:null);
 			}		
-			
 			$this->Tables[] = new AvocadoTable($Tablename, $Fields);
 		}
 		return true;
@@ -72,7 +73,11 @@ class AvocadoSchema{ // aka AvocadoTables
 	}
 	
 	public function toJson(){
-		return json_encode($this->toArray());
+		foreach($this->toArray() as $Table){
+			$TableName = $Table->getName();
+			$Tables[$TableName] = $Table->toArray();
+		}
+		return json_encode($Tables);
 	}
 
 	/**
