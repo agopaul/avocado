@@ -8,7 +8,7 @@
  **/
 class AvocadoSchemaDiff{
 	
-	protected $FirstHas, $SecondtHas;
+	protected $FirstHasTable, $SecondHasTable, $FirstHasField, $SecondtHasField;
 	
 	/**
 	 * undocumented function
@@ -25,7 +25,7 @@ class AvocadoSchemaDiff{
 	 * @author paul
 	 **/
 	function firstHasTable(AvocadoTable $Table){
-		$this->FirstHas[] = $Table;
+		$this->FirstHasTable[] = $Table;
 	}
 	
 	/**
@@ -34,8 +34,28 @@ class AvocadoSchemaDiff{
 	 * @return void
 	 * @author paul
 	 **/
-	function secondtHasTable(AvocadoTable $Table){
-		$this->SecondtHas[] = $Table;
+	function secondHasTable(AvocadoTable $Table){
+		$this->SecondtHasTable[] = $Table;
+	}
+
+	/**
+	 * Insert a new Field which secondSchema doesn't have
+	 *
+	 * @return void
+	 * @author paul
+	 **/
+	function firstHasField(AvocadoField $Field){
+		$this->FirstHasField[] = $Field;
+	}
+	
+	/**
+	 * Insert a new Field which firstSchema doesn't have
+	 *
+	 * @return void
+	 * @author paul
+	 **/
+	function secondHasField(AvocadoField $Field){
+		$this->SecondtHasField[] = $Field;
 	}
 	
 }
