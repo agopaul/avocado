@@ -6,10 +6,11 @@
  * @package Avocado
  * @author Paolo Agostinetto <paul.ago@gmail.com>
  **/
-class AvocadoSchema{ // aka AvocadoTables
+class AvocadoSchema implements SeekableIterator{
 	
 	protected $Db;
 	protected $Tables;
+	protected $TablesName, $Key;
 	
 	function __construct(PDO $Db=null, array $Arr=null){
 		$this->Tables = array();
@@ -19,7 +20,41 @@ class AvocadoSchema{ // aka AvocadoTables
 		elseif(!$Db && $Arr)
 			$this->fromArray($Arr);
 		else throw new AvocadoException("You must provide a PDO instance or an array");
+
+		$this->TablesName = array_keys($this->Tables);
+		$this->rewind();
 	}
+
+	/** Iterator methos **/
+	public function seek($Key){
+		$this->Key = $Key;
+		if(!$this->valid())
+			throw new OutOfBoundsException("Invalid seek position ({$this->Key})");
+		
+		$this->TablesName[$Key];
+	}
+
+	public function rewind(){
+		reset($this->TablesName);
+	}
+
+	public function next(){
+		next($this->TablesName);
+	}
+
+	public function key(){
+		return key($this->TablesName);
+	}
+
+	public function current(){
+		return current($this->TablesName);
+	}
+
+	public function valid(){
+		return isset($this->TablesName[$this->Key]);
+	}
+
+	/** Other methos **/
 	
 	public static function getInstance(PDO $Db=null, array $Arr=null){
 		return new self($Db, $Arr);
@@ -69,7 +104,11 @@ class AvocadoSchema{ // aka AvocadoTables
 	}
 	
 	public function toArray(){
-		return $this->getTables();
+		$Final = array();
+		foreach($this->getTables() as $TableName=>$Table){
+			$Final[$TableName] = $Table->toArray();
+		}
+		return $Final;
 	}
 	
 	public function toJson(){
