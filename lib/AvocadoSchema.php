@@ -105,8 +105,8 @@ class AvocadoSchema implements SeekableIterator{
 	
 	public function toArray(){
 		$Final = array();
-		foreach($this->getTables() as $TableName=>$Table){
-			$Final[$TableName] = $Table->toArray();
+		foreach($this->getTables() as $Table){
+			$Final[$Table->getName()] = $Table->toArray();
 		}
 		return $Final;
 	}
