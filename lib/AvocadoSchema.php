@@ -112,11 +112,7 @@ class AvocadoSchema implements SeekableIterator{
 	}
 	
 	public function toJson(){
-		foreach($this->toArray() as $Table){
-			$TableName = $Table->getName();
-			$Tables[$TableName] = $Table->toArray();
-		}
-		return json_encode($Tables);
+		return json_encode($this->toArray());
 	}
 
 	/**
