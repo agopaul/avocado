@@ -1,0 +1,6 @@
+ROADMAP:
+	* Semiautomatic schema migration
+	* Database agnostic
+	* Cli frontend, interactive/full-automatic
+	* Web frontend
+	* Strong compatibility with PHP 5.1
