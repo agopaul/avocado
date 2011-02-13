@@ -77,6 +77,7 @@ class AvocadoField{
 	 * @author paul
 	 **/
 	public function toArray(){
+		//var_dump($this->FieldName, $this->Length);
 		return array(
 				'name' => $this->FieldName,
 				'type' => $this->Type,
@@ -114,7 +115,8 @@ class AvocadoField{
 										$this->Nullable ? 'NULL' : 'NOT NULL'
 									);
 				break;
-
+			
+			// TODO :: work out this thing
 			case self::ADD_TABLE_FIELD:
 					return sprintf("'%s' %s%s %s",
 										$this->getName(),
