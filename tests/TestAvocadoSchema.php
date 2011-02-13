@@ -51,6 +51,7 @@ class TestAvocadoSchema extends UnitTestCase{
 		$this->assertIdentical($Schema->toArray(), $Input);
 	}
 
+	// ArrayAccess Interface
 	function testExistsArrayAccessIterator(){
 		$this->assertTrue(isset($this->Schema['orders']));
 	}
@@ -71,10 +72,27 @@ class TestAvocadoSchema extends UnitTestCase{
 		$this->Schema[] = $Schema2["countries"];
 		$this->asserttrue(isset($this->Schema['countries']));
 	}
-	
+
 	function testUnsetArrayAccessIterator(){
 		unset($this->Schema['orders']);
 		$this->assertFalse(isset($this->Schema['orders']));
+	}
+
+	// Iterator Interface
+	function testCountIterator(){
+		$this->assertEqual(iterator_count($this->Schema), 2);
+	}
+
+	function testTablesFromIterator(){
+		foreach($this->Schema as $Key=>$Table){
+			$this->assertTrue($Table instanceof AvocadoTable);
+			if($Key==0){
+				$this->assertEqual($Table->getName(), "orders");
+			}
+			elseif($Key==1){
+				$this->assertEqual($Table->getName(), "people");
+			}
+		}
 	}
 
 }

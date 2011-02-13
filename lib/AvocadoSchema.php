@@ -1,16 +1,21 @@
 <?php
 
+/*
+**	TODO :: Implement a factory object, AvocadoSchema should not handle the hydration logic
+*/
+
+
 /**
  * WriteMePlease
  *
  * @package Avocado
  * @author Paolo Agostinetto <paul.ago@gmail.com>
  **/
-class AvocadoSchema implements ArrayAccess{
+class AvocadoSchema implements ArrayAccess, Iterator{
 	
 	protected $Db;
 	protected $Tables;
-	protected $TableCursor, $Key;
+	protected $CurrentKey;
 	
 	function __construct(PDO $Db=null, array $Arr=null){
 		$this->Tables = array();
@@ -21,7 +26,8 @@ class AvocadoSchema implements ArrayAccess{
 			$this->fromArray($Arr);
 		else throw new AvocadoException("You must provide a PDO instance or an array");
 
-		$this->TableCursor = array_keys($this->toArray());
+		// Reset Iterator cursor
+		$this->rewind();
 	}
 
 	/** ArrayAccess iterator methos **/
@@ -29,7 +35,7 @@ class AvocadoSchema implements ArrayAccess{
 		if($Key)
 			return array_key_exists($Key, $this->toArray());
 	}
-	
+
 	public function offsetGet($Key){
 		if($this->offsetExists($Key)){
 			foreach($this->Tables as $Table){
@@ -59,8 +65,28 @@ class AvocadoSchema implements ArrayAccess{
 		}
 	}
 
+	/** SeekableIterator iterator methos **/
+	public function rewind(){
+		$this->CurrentKey = 0;
+	}
+
+	public function current(){
+		return $this->Tables[$this->CurrentKey];
+	}
+
+	public function key(){
+		return $this->CurrentKey;
+	}
+
+	public function next(){
+		++$this->CurrentKey;
+	}
+
+	public function valid(){
+		return isset($this->Tables[$this->CurrentKey]);
+	}
+
 	/** Other methos **/
-	
 	public static function getInstance(PDO $Db=null, array $Arr=null){
 		return new self($Db, $Arr);
 	}
