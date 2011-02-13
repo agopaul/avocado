@@ -6,11 +6,11 @@
  * @package Avocado
  * @author Paolo Agostinetto <paul.ago@gmail.com>
  **/
-class AvocadoSchema implements SeekableIterator{
+class AvocadoSchema implements ArrayAccess{
 	
 	protected $Db;
 	protected $Tables;
-	protected $TablesName, $Key;
+	protected $TableCursor, $Key;
 	
 	function __construct(PDO $Db=null, array $Arr=null){
 		$this->Tables = array();
@@ -21,37 +21,42 @@ class AvocadoSchema implements SeekableIterator{
 			$this->fromArray($Arr);
 		else throw new AvocadoException("You must provide a PDO instance or an array");
 
-		$this->TablesName = array_keys($this->Tables);
-		$this->rewind();
+		$this->TableCursor = array_keys($this->toArray());
 	}
 
-	/** Iterator methos **/
-	public function seek($Key){
-		$this->Key = $Key;
-		if(!$this->valid())
-			throw new OutOfBoundsException("Invalid seek position ({$this->Key})");
-		
-		$this->TablesName[$Key];
+	/** ArrayAccess iterator methos **/
+	public function offsetExists($Key){
+		if($Key)
+			return array_key_exists($Key, $this->toArray());
+	}
+	
+	public function offsetGet($Key){
+		if($this->offsetExists($Key)){
+			foreach($this->Tables as $Table){
+				if($Table->getName()==$Key)
+					return $Table;
+			}
+		}
+		return $this->Tables[$Key];
 	}
 
-	public function rewind(){
-		reset($this->TablesName);
+	public function offsetSet($Key, $Table){
+		if(!$Table instanceof AvocadoTable)
+			throw new AvocadoException("You must provide a valid AvocadoTable instance");
+
+		$this->Tables[] = $Table;
 	}
 
-	public function next(){
-		next($this->TablesName);
-	}
-
-	public function key(){
-		return key($this->TablesName);
-	}
-
-	public function current(){
-		return current($this->TablesName);
-	}
-
-	public function valid(){
-		return isset($this->TablesName[$this->Key]);
+	public function offsetUnSet($Key){
+		if($this->offsetExists($Key)){
+			foreach($this->Tables as $Key=>$Table){
+				if($Table->getName()==$Key){
+					// Unset the whole fucking object, please
+					$this->Tables[$Key] = null;
+					unset($this->Tables[$Key]);
+				}
+			}
+		}
 	}
 
 	/** Other methos **/
