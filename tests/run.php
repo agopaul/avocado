@@ -17,6 +17,7 @@ class AllFileTests extends TestSuite {
     function __construct() {
         parent::__construct();
         $this->addFile(dirname(__FILE__).'/TestAvocadoField.php');
+        $this->addFile(dirname(__FILE__).'/TestAvocadoTable.php');
         $this->addFile(dirname(__FILE__).'/TestAvocadoSchema.php');
     }
 }

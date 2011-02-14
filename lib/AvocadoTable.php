@@ -6,16 +6,49 @@
  * @package Avocado
  * @author Paolo Agostinetto <paul.ago@gmail.com>
  **/
-class AvocadoTable{ // implements ArrayIterator
+class AvocadoTable implements Iterator{
 	
 	protected $Tablename, $Fields;
+	protected $CurrentKey;
 	
 	function __construct($Tablename, array $Fields){
 		if(!$Tablename) throw new AvocadoException("Tablename can't be null");
 		$this->Tablename = $Tablename;
 		$this->Fields = $Fields;
+
+		// Set the backreference on the field objects
 		foreach($this->Fields as $Field)
 			$Field->setTable($this);
+
+		$this->rewind();
+	}
+
+	/** Iterator methos **/
+	public function seek($Key){
+		if(!$this->valid())
+			throw new OutOfBoundsException("Invalid seek position ({$this->Key})");
+		
+		$this->CurrentKey = $Key;
+	}
+
+	public function rewind(){
+		$this->CurrentKey = 0;
+	}
+
+	public function next(){
+		++$this->CurrentKey;
+	}
+
+	public function key(){
+		return $this->CurrentKey;
+	}
+
+	public function current(){
+		return $this->Fields[$this->CurrentKey];
+	}
+
+	public function valid(){
+		return isset($this->Fields[$this->CurrentKey]);
 	}
 	
 	public function getName(){
