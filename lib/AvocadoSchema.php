@@ -43,7 +43,6 @@ class AvocadoSchema implements ArrayAccess, Iterator{
 					return $Table;
 			}
 		}
-		return $this->Tables[$Key];
 	}
 
 	public function offsetSet($Key, $Table){
@@ -65,7 +64,7 @@ class AvocadoSchema implements ArrayAccess, Iterator{
 		}
 	}
 
-	/** SeekableIterator iterator methos **/
+	/** Iterator methos **/
 	public function rewind(){
 		$this->CurrentKey = 0;
 	}
@@ -127,7 +126,7 @@ class AvocadoSchema implements ArrayAccess, Iterator{
 											$Field['type'],
 											(bool)$Field['nullable'],
 											(int)$Field['length']);
-			}		
+			}
 			
 			$this->Tables[] = new AvocadoTable($TableName, $Fields);
 		}
