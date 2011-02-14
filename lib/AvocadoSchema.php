@@ -49,13 +49,19 @@ class AvocadoSchema implements ArrayAccess, Iterator{
 		if(!$Table instanceof AvocadoTable)
 			throw new AvocadoException("You must provide a valid AvocadoTable instance");
 
+		// Delete the table if it already exists
+		if($this->offsetExists($Key) || 
+				$this->offsetExists($Table->getName())){
+			$this->offsetUnSet($Table->getName());
+		}
+
 		$this->Tables[] = $Table;
 	}
 
-	public function offsetUnSet($Key){
-		if($this->offsetExists($Key)){
+	public function offsetUnSet($Name){
+		if($this->offsetExists($Name)){
 			foreach($this->Tables as $Key=>$Table){
-				if($Table->getName()==$Key){
+				if($Table->getName()==$Name){
 					// Unset the whole fucking object, please
 					$this->Tables[$Key] = null;
 					unset($this->Tables[$Key]);

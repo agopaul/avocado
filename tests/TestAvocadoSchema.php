@@ -11,17 +11,17 @@ class TestAvocadoSchema extends UnitTestCase{
 
 		$this->Pdo = new PDO('mysql:host=localhost;dbname=avocado_tests', "root", "qwerty");
 
+		$this->Pdo->query("DROP TABLE IF EXISTS orders; CREATE TABLE orders (
+						id INT PRIMARY KEY,
+						customer_id INT,
+						salesperson_id INT
+					)");
+					
 		$this->Pdo->query("DROP TABLE IF EXISTS people; CREATE TABLE people(
 							id INT PRIMARY KEY,
 							name VARCHAR(255) NOT NULL,
 							surname TEXT NOT NULL
 						)");
-
-		$this->Pdo->query("DROP TABLE IF EXISTS orders; CREATE TABLE orders (
-								id INT PRIMARY KEY,
-								customer_id INT,
-								salesperson_id INT
-							)");
 
 	}
 
@@ -29,6 +29,7 @@ class TestAvocadoSchema extends UnitTestCase{
 		$this->Schema = AvocadoSchema::getInstanceFromDb($this->Pdo);
 	}
 
+	// Hydration
 	function testDbHydration(){
 		$Schema = AvocadoSchema::getInstanceFromDb($this->Pdo);
 		$this->assertEqual(count($Schema->getTables()), 2);
@@ -52,15 +53,15 @@ class TestAvocadoSchema extends UnitTestCase{
 	}
 
 	// ArrayAccess Interface
-	function testExistsArrayAccessIterator(){
+	function testExistsArrayAccess(){
 		$this->assertTrue(isset($this->Schema['orders']));
 	}
 
-	function testGetArrayAccessIterator(){
+	function testGetArrayAccess(){
 		$this->assertEqual($this->Schema['orders']->getName(), "orders");
 	}
 
-	function testSetArrayAccessIterator(){
+	function testSetArrayAccess(){
 		$Input = array(
 				"countries" => array(
 						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>0),
@@ -73,9 +74,23 @@ class TestAvocadoSchema extends UnitTestCase{
 		$this->asserttrue(isset($this->Schema['countries']));
 	}
 
-	function testUnsetArrayAccessIterator(){
+	function testUnsetArrayAccess(){
+		$this->assertTrue(isset($this->Schema['orders']));
 		unset($this->Schema['orders']);
 		$this->assertFalse(isset($this->Schema['orders']));
+	}
+
+	function testSetArrayAccessDoNotDupplicate(){
+		$this->Schema[] = new AvocadoTable("users",array(
+				new AvocadoField("id", "int", false, 10),
+				new AvocadoField("name", "varchar", true, 255),
+				new AvocadoField("username", "varchar", true, 127)
+			));
+		$this->Schema[] = new AvocadoTable("users",array(
+				new AvocadoField("id", "int", false, 10),
+				new AvocadoField("username", "varchar", true, 127)
+			));
+		$this->assertEqual(count($this->Schema->toArray()), 3);
 	}
 
 	// Iterator Interface
@@ -94,6 +109,28 @@ class TestAvocadoSchema extends UnitTestCase{
 			}
 		}
 	}
+/*
+	// Other methods
+	function testToArray(){
+
+		$Expected = array(
+						"orders" => array(
+								array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>0),
+								array("name"=>"customer_id", "type"=>"int", "nullable"=>true, "length"=>0),
+								array("name"=>"salesperson_id", "type"=>"int", "nullable"=>true, "length"=>0),
+							),
+						"people" => array(
+								array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>0),
+								array("name"=>"name", "type"=>"varchar", "nullable"=>false, "length"=>255),
+								array("name"=>"surname", "type"=>"text", "nullable"=>false, "length"=>0),
+							)
+					);
+
+		var_dump($this->Schema->toArray(), $Expected);
+		$this->assertIdentical($this->Schema->toArray(), $Expected);
+	}
+
+*/
 
 }
 
