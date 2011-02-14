@@ -113,11 +113,11 @@ class AvocadoSchema implements ArrayAccess, Iterator{
 			$Tablename = $Table[0];
 			$Fields = array();
 			foreach($Db->query("SHOW COLUMNS FROM $Tablename") as $Field){
-				preg_match("/(\w+)((\([\d]+)\))?/", $Field['Type'], $Matches);
+				preg_match("/(\w+)(\(([\d]+)\))?/", $Field['Type'], $Matches);
 				$Fields[] = new AvocadoField($Field['Field'],
 											$Matches[1],
 											$Field['Null']=='YES'?true:false,
-											isset($Matches[2])?(int)$Matches[2]:null);
+											isset($Matches[3])?(int)$Matches[3]:null);
 			}		
 			$this->Tables[] = new AvocadoTable($Tablename, $Fields);
 		}
@@ -131,7 +131,7 @@ class AvocadoSchema implements ArrayAccess, Iterator{
 				$Fields[] = new AvocadoField($Field['name'],
 											$Field['type'],
 											(bool)$Field['nullable'],
-											(int)$Field['length']);
+											$Field['length']);
 			}
 			
 			$this->Tables[] = new AvocadoTable($TableName, $Fields);

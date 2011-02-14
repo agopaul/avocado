@@ -14,6 +14,14 @@ class TestAvocadoField extends UnitTestCase{
 		$this->assertEqual($this->Field->getName(), "id");
 	}
 
+	function testGetType(){
+		$this->assertEqual($this->Field->getType(), "int");
+	}
+
+	function testGetLength(){
+		$this->assertIdentical($this->Field->getLength(), 10);
+	}
+
 	function testToArray(){
 		$Expected = array(
 						'name' => "id",

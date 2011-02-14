@@ -13,8 +13,8 @@ class TestAvocadoSchema extends UnitTestCase{
 
 		$this->Pdo->query("DROP TABLE IF EXISTS orders; CREATE TABLE orders (
 						id INT PRIMARY KEY,
-						customer_id INT,
-						salesperson_id INT
+						customer_id INT(11),
+						salesperson_id INT(11)
 					)");
 					
 		$this->Pdo->query("DROP TABLE IF EXISTS people; CREATE TABLE people(
@@ -33,19 +33,32 @@ class TestAvocadoSchema extends UnitTestCase{
 	function testDbHydration(){
 		$Schema = AvocadoSchema::getInstanceFromDb($this->Pdo);
 		$this->assertEqual(count($Schema->getTables()), 2);
+
+		$Tables = $Schema->getTables();
+		$this->assertEqual($Tables[0]->getName(), "orders");
+
+		$Fields = $Tables[0]->getFields();
+		$this->assertEqual($Fields[1]->getName(), "customer_id");
+		$this->assertEqual($Fields[1]->getType(), "int");
+
+		$this->assertEqual($Tables[1]->getName(), "people");
+
+		$Fields = $Tables[1]->getFields();
+		$this->assertIdentical($Fields[1]->getLength(), 255);
+		
 	}
 
 	function testArrayHydration(){
 		$Input = array(
 				"orders" => array(
-						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>0),
-						array("name"=>"customer_id", "type"=>"int", "nullable"=>true, "length"=>0),
-						array("name"=>"salesperson_id", "type"=>"int", "nullable"=>true, "length"=>0),
+						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
+						array("name"=>"customer_id", "type"=>"int", "nullable"=>true, "length"=>11),
+						array("name"=>"salesperson_id", "type"=>"int", "nullable"=>true, "length"=>11),
 					),
 				"people" => array(
-						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>0),
+						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
 						array("name"=>"name", "type"=>"varchar", "nullable"=>false, "length"=>255),
-						array("name"=>"surname", "type"=>"text", "nullable"=>false, "length"=>0),
+						array("name"=>"surname", "type"=>"text", "nullable"=>false, "length"=>null),
 					)
 			);
 		$Schema = AvocadoSchema::getInstanceFromArray($Input);
@@ -64,8 +77,8 @@ class TestAvocadoSchema extends UnitTestCase{
 	function testSetArrayAccess(){
 		$Input = array(
 				"countries" => array(
-						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>0),
-						array("name"=>"country_id", "type"=>"int", "nullable"=>true, "length"=>0)
+						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
+						array("name"=>"country_id", "type"=>"int", "nullable"=>true, "length"=>11)
 					)
 			);
 		$Schema2 = AvocadoSchema::getInstanceFromArray($Input);
@@ -82,12 +95,12 @@ class TestAvocadoSchema extends UnitTestCase{
 
 	function testSetArrayAccessDoNotDupplicate(){
 		$this->Schema[] = new AvocadoTable("users",array(
-				new AvocadoField("id", "int", false, 10),
+				new AvocadoField("id", "int", false, 11),
 				new AvocadoField("name", "varchar", true, 255),
 				new AvocadoField("username", "varchar", true, 127)
 			));
 		$this->Schema[] = new AvocadoTable("users",array(
-				new AvocadoField("id", "int", false, 10),
+				new AvocadoField("id", "int", false, 11),
 				new AvocadoField("username", "varchar", true, 127)
 			));
 		$this->assertEqual(count($this->Schema->toArray()), 3);
@@ -109,28 +122,25 @@ class TestAvocadoSchema extends UnitTestCase{
 			}
 		}
 	}
-/*
+
 	// Other methods
 	function testToArray(){
 
 		$Expected = array(
 						"orders" => array(
-								array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>0),
-								array("name"=>"customer_id", "type"=>"int", "nullable"=>true, "length"=>0),
-								array("name"=>"salesperson_id", "type"=>"int", "nullable"=>true, "length"=>0),
+							array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
+							array("name"=>"customer_id", "type"=>"int", "nullable"=>true, "length"=>11),
+							array("name"=>"salesperson_id", "type"=>"int", "nullable"=>true, "length"=>11),
 							),
 						"people" => array(
-								array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>0),
-								array("name"=>"name", "type"=>"varchar", "nullable"=>false, "length"=>255),
-								array("name"=>"surname", "type"=>"text", "nullable"=>false, "length"=>0),
-							)
+							array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
+							array("name"=>"name", "type"=>"varchar", "nullable"=>false, "length"=>255),
+							array("name"=>"surname", "type"=>"text", "nullable"=>false, "length"=>null),
+						)
 					);
-
-		var_dump($this->Schema->toArray(), $Expected);
 		$this->assertIdentical($this->Schema->toArray(), $Expected);
 	}
 
-*/
 
 }
 

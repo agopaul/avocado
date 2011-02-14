@@ -31,13 +31,16 @@ class AvocadoField{
 	 * @return void
 	 * @author paul
 	 **/
-	function __construct($FieldName, $Type, $Nullable=null, $Length=null){
+	function __construct($FieldName, $Type, $Nullable=false, $Length=null){
 		if(!$FieldName) throw new AvocadoException("FieldName can't be null");
 		if(!$Type) throw new AvocadoException("Field type can't be null");
+		if($Length<0 && !is_null($Length))
+			throw new AvocadoException("Length type can't be null");
+
 		$this->FieldName = $FieldName;
 		$this->Type = $Type;
 		$this->Nullable = (bool)$Nullable;
-		$this->Length = (int)$Length;
+		$this->Length = $Length;
 	}
 	
 	/**
@@ -48,6 +51,26 @@ class AvocadoField{
 	 **/
 	public function getName(){
 		return $this->FieldName;
+	}
+
+	/**
+	 * Return field type
+	 *
+	 * @return string
+	 * @author paul
+	 **/
+	public function getType(){
+		return $this->Type;
+	}
+
+	/**
+	 * Return field length
+	 *
+	 * @return int
+	 * @author paul
+	 **/
+	public function getLength(){
+		return $this->Length;
 	}
 
 	/**
