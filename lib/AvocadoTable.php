@@ -6,7 +6,7 @@
  * @package Avocado
  * @author Paolo Agostinetto <paul.ago@gmail.com>
  **/
-class AvocadoTable implements Iterator{
+class AvocadoTable implements ArrayAccess, Iterator{
 	
 	protected $Tablename, $Fields;
 	protected $CurrentKey;
@@ -21,6 +21,53 @@ class AvocadoTable implements Iterator{
 			$Field->setTable($this);
 
 		$this->rewind();
+	}
+
+	/** ArrayAccess iterator methos **/
+	public function offsetExists($Key){
+		if($Key){
+			foreach($this->Fields as $Field){
+				if($Field->getName()==$Key)
+					return true;
+			}
+		}
+		else
+			return false;
+	}
+
+	public function offsetGet($Key){
+		if($this->offsetExists($Key)){
+			foreach($this->Fields as $Field){
+				if($Field->getName()==$Key)
+					return $Field;
+			}
+		}
+	}
+
+	public function offsetSet($Key, $Field){
+		if(!$Field instanceof AvocadoField)
+			throw new AvocadoException("You must provide a valid AvocadoField instance");
+		
+		// Delete the field if it already exists
+		if($this->offsetExists($Key) || 
+				$this->offsetExists($Field->getName())){
+			$this->offsetUnSet($Field->getName());
+		}
+
+		$this->Fields[] = $Field;
+	}
+
+	public function offsetUnSet($Name){
+		if($this->offsetExists($Name)){
+			foreach($this->Fields as $Key=>$Field){
+				if($Field->getName()==$Name){
+					$this->Fields[$Key] = null;
+					unset($this->Fields[$Key]);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/** Iterator methos **/
