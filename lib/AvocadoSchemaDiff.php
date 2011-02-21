@@ -8,7 +8,7 @@
  **/
 class AvocadoSchemaDiff{
 	
-	protected $FirstHasTable, $SecondHasTable, $FirstHasField, $SecondtHasField;
+	protected $FirstHasTable, $SecondHasTable, $FirstHasField, $SecondHasField;
 	
 	/**
 	 * undocumented function
@@ -16,7 +16,10 @@ class AvocadoSchemaDiff{
 	 * @return void
 	 * @author paul
 	 **/
-	function __construct(){}
+	function __construct(){
+		$this->FirstHasTable = $this->SecondHasTable = array();
+		$this->FirstHasField = $this->SecondHasField = array();
+	}
 	
 	/**
 	 * Insert a new Table which secondSchema doesn't have
@@ -35,7 +38,7 @@ class AvocadoSchemaDiff{
 	 * @author paul
 	 **/
 	function secondHasTable(AvocadoTable $Table){
-		$this->SecondtHasTable[] = $Table;
+		$this->SecondHasTable[] = $Table;
 	}
 
 	/**
@@ -55,7 +58,38 @@ class AvocadoSchemaDiff{
 	 * @author paul
 	 **/
 	function secondHasField(AvocadoField $Field){
-		$this->SecondtHasField[] = $Field;
+		$this->SecondHasField[] = $Field;
+	}
+
+	/**
+	 * Export the diff to an array
+	 *
+	 * @return void
+	 * @author paul
+	 **/
+	function toArray(){
+
+		$FirstHasTable = $FirstHasField = array();
+		$SecondHasTable = $SecondHasField = array();
+
+		foreach($this->FirstHasTable as $Table)
+			$FirstHasTable[] = $Table->toArray();
+
+		foreach($this->FirstHasField as $Field)
+			$FirstHasField[] = $Field->toArray();
+
+		foreach($this->SecondHasTable as $Table)
+			$SecondHasTable[] = $Table->toArray();
+
+		foreach($this->SecondHasField as $Field)
+			$SecondHasField[] = $Field->toArray();
+
+		return array(
+				"first_has_tables" => $FirstHasTable,
+				"first_has_fields" => $FirstHasField,
+				"second_has_tables" => $SecondHasTable,
+				"second_has_fields" => $SecondHasField
+			);
 	}
 	
 }
