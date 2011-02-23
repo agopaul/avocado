@@ -1,6 +1,8 @@
 <?php
 
 require_once dirname(__FILE__) . "/../lib/Avocado.php";
+require_once dirname(__FILE__) . "/config.php";
+
 require_once dirname(__FILE__) . "/simpletest/autorun.php";
 
 spl_autoload_register(function($Classname){
