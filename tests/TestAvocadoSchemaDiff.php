@@ -25,6 +25,29 @@ class TestAvocadoSchemaDiff extends UnitTestCase{
 		$this->Field2 = new AvocadoField("customer_id", "int", true, 10);
 	}
 
+	function testGetAll(){
+		$this->Diff->firstHasTable($this->Table1);
+		$this->Diff->secondHasField($this->Field1);
+
+		$All = $this->Diff->getAll();
+
+		foreach($All["first_has_tables"]+$All["second_has_tables"] as $Item)
+			$this->assertIsA($Item, "AvocadoTable");
+		
+		foreach($All["first_has_fields"]+$All["second_has_fields"] as $Item)
+			$this->AssertIsA($Item, "AvocadoField");
+
+		$this->assertEqual($All["first_has_tables"], 
+							array(
+								$this->Table1
+							));
+
+		$this->assertEqual($All["second_has_fields"], 
+							array(
+								$this->Field1
+							));
+	}
+
 	function testFirstHasTables(){
 		
 		$this->Diff->firstHasTable($this->Table1);

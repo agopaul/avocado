@@ -62,7 +62,25 @@ class AvocadoSchemaDiff{
 	}
 
 	/**
-	 * Export the diff to an array
+	 * Export the whole diff to an array
+	 * of objects
+	 *
+	 * @return void
+	 * @author paul
+	 **/
+	function getAll(){
+
+		return array(
+				"first_has_tables" => $this->FirstHasTable,
+				"first_has_fields" => $this->FirstHasField,
+				"second_has_tables" => $this->SecondHasTable,
+				"second_has_fields" => $this->SecondHasField
+			);
+	}
+
+	/**
+	 * Export the whole diff to an array, 
+	 * with tables and field
 	 *
 	 * @return void
 	 * @author paul
