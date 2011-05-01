@@ -31,36 +31,7 @@ class TestAvocadoField extends UnitTestCase{
 					);
 		$this->assertIdentical($this->Field->toArray(), $Expected);
 	}
-
-	function testTablePresenceCallingToSql(){
-		
-		try{
-			$this->Field->toSql(AvocadoField::ADD_FIELD);
-			$this->fail("Exception should be raised");
-		}
-		catch(AvocadoException $e){
-			$this->pass("Exception correctly raised");
-		}
-
-	}
-
-	function testToSql(){
-		
-		$AddSql = "ALTER TABLE people ADD id int(10) NOT NULL;";
-		$UpdateSql = "ALTER TABLE people MODIFY id int(10) NOT NULL;";
-		$AlterSql = "ALTER TABLE people MODIFY id int(10) NOT NULL;";
-
-		$Table = new AvocadoTable("people", array($this->Field));
-		$this->assertEqual(
-				$this->Field->toSql(AvocadoField::ADD_FIELD),
-				$AddSql);
-		
-		$this->assertEqual(
-				$this->Field->toSql(AvocadoField::UPDATE_FIELD),
-				$UpdateSql);
-
-	}
-
+	
 }
 
 ?>

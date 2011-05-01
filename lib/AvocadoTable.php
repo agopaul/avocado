@@ -133,20 +133,6 @@ class AvocadoTable implements ArrayAccess, Iterator{
 		}
 		return $Fields;
 	}
-
-	/**
-	 * Return the table SQL
-	 *
-	 * @return string
-	 * @author paul
-	 **/
-	public function toSql(){
-		$Sql = "CREATE TABLE {$this->getName()}(\n";
-		foreach($this->getFields() as $Field){
-			$Sql .= $Field->toSql(AvocadoField::ADD_TABLE_FIELD) . ",\n";
-		}
-		return $Sql . ")";
-	}
 	
 }
 

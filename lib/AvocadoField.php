@@ -109,51 +109,7 @@ class AvocadoField{
 			);
 	}
 
-	/**
-	 * Return sql to create/modify field
-	 *
-	 * @return string
-	 * @author paul
-	 **/
-	function toSql($Action=self::ADD_FIELD){
-		if(!$this->Table) throw new AvocadoException("You must set the Table");
-
-		switch($Action){
-			case self::ADD_FIELD:
-					return sprintf("ALTER TABLE %s ADD %s %s(%s) %s;", 
-										$this->Table->getName(),
-										$this->getName(),
-										$this->Type,
-										$this->Length,
-										$this->Nullable ? 'NULL' : 'NOT NULL'
-									);
-				break;
-				
-			case self::UPDATE_FIELD:
-					return sprintf("ALTER TABLE %s MODIFY %s %s(%s) %s;", 
-										$this->Table->getName(),
-										$this->getName(),
-										$this->Type,
-										$this->Length,
-										$this->Nullable ? 'NULL' : 'NOT NULL'
-									);
-				break;
-			
-			// TODO :: work out this thing
-			case self::ADD_TABLE_FIELD:
-					return sprintf("'%s' %s%s %s",
-										$this->getName(),
-										$this->Type,
-										$this->Length ? "($this->Length)" : null,
-										$this->Nullable ? 'NULL' : 'NOT NULL'
-									);
-				break;
-				
-			default:
-					throw new AvocadoException("Unknow action");
-				break;
-		}
-	}
+	
 	
 }
 
