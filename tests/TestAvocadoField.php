@@ -22,6 +22,10 @@ class TestAvocadoField extends UnitTestCase{
 		$this->assertIdentical($this->Field->getLength(), 10);
 	}
 
+	function testGetNullable(){
+		$this->assertIdentical($this->Field->getNullable(), false);
+	}
+
 	function testToArray(){
 		$Expected = array(
 						'name' => "id",
@@ -31,7 +35,7 @@ class TestAvocadoField extends UnitTestCase{
 					);
 		$this->assertIdentical($this->Field->toArray(), $Expected);
 	}
-	
+
 }
 
 ?>

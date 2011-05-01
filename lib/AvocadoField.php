@@ -74,6 +74,16 @@ class AvocadoField{
 	}
 
 	/**
+	 * Return field nullable property
+	 *
+	 * @return int
+	 * @author paul
+	 **/
+	public function getNullable(){
+		return $this->Nullable;
+	}
+
+	/**
 	 * Get the table
 	 *
 	 * @return AvocadoTable
