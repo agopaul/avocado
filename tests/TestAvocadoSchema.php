@@ -9,7 +9,9 @@ class TestAvocadoSchema extends UnitTestCase{
 
 		parent::__construct();
 
-		$this->Pdo = new PDO('mysql:host=localhost;dbname=avocado_tests', "root", "qwerty");
+		$this->Pdo = new PDO(AvocadoTestConfig::$Dsn,
+							 AvocadoTestConfig::$Username,
+							 AvocadoTestConfig::$Password);
 
 		$this->Pdo->query("DROP TABLE IF EXISTS orders; CREATE TABLE orders (
 						id INT PRIMARY KEY,
