@@ -8,7 +8,7 @@
  **/
 class AvocadoSchemaDiff{
 	
-	protected $FirstHasTable, $SecondHasTable, $FirstHasField, $SecondHasField;
+	protected $addTable, $deleteTable, $addField, $deleteField;
 	
 	/**
 	 * undocumented function
@@ -17,8 +17,8 @@ class AvocadoSchemaDiff{
 	 * @author paul
 	 **/
 	function __construct(){
-		$this->FirstHasTable = $this->SecondHasTable = array();
-		$this->FirstHasField = $this->SecondHasField = array();
+		$this->addTable = $this->deleteTable = array();
+		$this->addField = $this->deleteField = array();
 	}
 	
 	/**
@@ -27,8 +27,8 @@ class AvocadoSchemaDiff{
 	 * @return void
 	 * @author paul
 	 **/
-	function firstHasTable(AvocadoTable $Table){
-		$this->FirstHasTable[] = $Table;
+	function addTable(AvocadoTable $Table){
+		$this->addTable[] = $Table;
 	}
 	
 	/**
@@ -37,8 +37,8 @@ class AvocadoSchemaDiff{
 	 * @return void
 	 * @author paul
 	 **/
-	function secondHasTable(AvocadoTable $Table){
-		$this->SecondHasTable[] = $Table;
+	function deleteTable(AvocadoTable $Table){
+		$this->deleteTable[] = $Table;
 	}
 
 	/**
@@ -47,8 +47,8 @@ class AvocadoSchemaDiff{
 	 * @return void
 	 * @author paul
 	 **/
-	function firstHasField(AvocadoField $Field){
-		$this->FirstHasField[] = $Field;
+	function addField(AvocadoField $Field){
+		$this->addField[] = $Field;
 	}
 	
 	/**
@@ -57,8 +57,8 @@ class AvocadoSchemaDiff{
 	 * @return void
 	 * @author paul
 	 **/
-	function secondHasField(AvocadoField $Field){
-		$this->SecondHasField[] = $Field;
+	function deleteField(AvocadoField $Field){
+		$this->deleteField[] = $Field;
 	}
 
 	/**
@@ -71,10 +71,10 @@ class AvocadoSchemaDiff{
 	function getAll(){
 
 		return array(
-				"first_has_tables" => $this->FirstHasTable,
-				"first_has_fields" => $this->FirstHasField,
-				"second_has_tables" => $this->SecondHasTable,
-				"second_has_fields" => $this->SecondHasField
+				"add_tables" => $this->addTable,
+				"add_fields" => $this->addField,
+				"delete_tables" => $this->deleteTable,
+				"delete_fields" => $this->deleteField
 			);
 	}
 
@@ -87,26 +87,26 @@ class AvocadoSchemaDiff{
 	 **/
 	function toArray(){
 
-		$FirstHasTable = $FirstHasField = array();
-		$SecondHasTable = $SecondHasField = array();
+		$addTable = $addField = array();
+		$deleteTable = $deleteField = array();
 
-		foreach($this->FirstHasTable as $Table)
-			$FirstHasTable[] = $Table->toArray();
+		foreach($this->addTable as $Table)
+			$addTable[] = $Table->toArray();
 
-		foreach($this->FirstHasField as $Field)
-			$FirstHasField[] = $Field->toArray();
+		foreach($this->addField as $Field)
+			$addField[] = $Field->toArray();
 
-		foreach($this->SecondHasTable as $Table)
-			$SecondHasTable[] = $Table->toArray();
+		foreach($this->deleteTable as $Table)
+			$deleteTable[] = $Table->toArray();
 
-		foreach($this->SecondHasField as $Field)
-			$SecondHasField[] = $Field->toArray();
+		foreach($this->deleteField as $Field)
+			$deleteField[] = $Field->toArray();
 
 		return array(
-				"first_has_tables" => $FirstHasTable,
-				"first_has_fields" => $FirstHasField,
-				"second_has_tables" => $SecondHasTable,
-				"second_has_fields" => $SecondHasField
+				"add_tables" => $addTable,
+				"add_fields" => $addField,
+				"delete_tables" => $deleteTable,
+				"delete_fields" => $deleteField
 			);
 	}
 	
