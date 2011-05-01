@@ -5,20 +5,12 @@
 */
 class AvocadoRestServer{
 	
-	function __construct(PDo $Db, $Method, $Params=null){
-		$this->Avo = AvocadoSchema::getInstance($Db);
-		switch($Params['act']){
-			case 'get_all':
-					$this->process($this->getAll());
-				break;
-			default:
-					echo "unknow method";
-				break;
-		}
+	function __construct(PDO $Db){
+		$this->Avo = AvocadoSchema::getInstanceFromDb($Db);
 	}
 	
-	public static function getInstance(PDO $Db, $Method, $Params=null){
-		return new self($Db, $Method, $Params);
+	public static function getInstance(PDO $Db){
+		return new self($Db);
 	}
 	
 	public function setHeader(){
@@ -26,14 +18,22 @@ class AvocadoRestServer{
 	}
 	
 	public function getAll(){
-		return $this->Avo->toJson();
+		return $this->Avo->toArray();
 	}
-	
-	public function process($Output){
+
+	public function processRequest($Method, $Params=null){
 		$this->setHeader();
-		echo $Output;
+		switch($Params['act']){
+			case 'get_all':
+					echo $this->getAll();
+				break;
+			default:
+					echo "unknow method";
+				break;
+		}
 	}
 	
 }
+
 
 ?>
