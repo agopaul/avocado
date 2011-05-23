@@ -20,6 +20,47 @@ class AvocadoSchemaDiff{
 		$this->addTable = $this->deleteTable = array();
 		$this->addField = $this->deleteField = array();
 	}
+
+	/**
+	 * Compare 2 schemas and save the differences
+	 *
+	 * @return void
+	 * @author paul
+	 **/
+	public function compareSchemas(AvocadoSchema $Schema1, AvocadoSchema $Schema2){
+
+		$Tables = array_merge($Schema1->getTables(), $Schema2->getTables());
+
+		foreach($Tables as $Table){
+			if(isset($Schema1[$Table->getName()]) && !isset($Schema2[$Table->getName()])){
+				$this->addTable($Table);
+			}
+			elseif(isset($Schema2[$Table->getName()]) && !isset($Schema1[$Table->getName()])){
+				$this->deleteTable($Table);
+			}
+			else{
+
+				// Compare fields
+				$T1 = $Schema1[$Table->getName()]->getFields();
+				$T2 = $Schema2[$Table->getName()]->getFields();
+
+				foreach(array_merge($T1, $T2) as $Field){
+					/// TODO :: Check the field properties too
+					
+					//foreach($T1 as $CurrentField)
+					//	$CurrentField->getName()
+
+					if(isset($T1[$Field->getName()]) && !isset($T2[$Field->getName()])){
+						$this->addField($Field);
+					}
+					elseif(isset($T2[$Field->getName()]) && !isset($T1[$Field->getName()])){
+						$this->deleteField($Field);
+					}
+				}
+
+			}
+		}
+	}
 	
 	/**
 	 * Insert a new Table which secondSchema doesn't have
