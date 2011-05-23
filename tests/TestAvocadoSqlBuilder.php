@@ -16,9 +16,12 @@ class TestAvocadoSqlBuilder extends UnitTestCase{
 	function setUp(){
 		$this->Diff = new AvocadoSchemaDiff;
 
+		$this->Field1 = new AvocadoField("id", "int", false, 10);
+		$this->Field2 = new AvocadoField("name", "varchar", true, 255);
+
 		$this->Source = new AvocadoTable("people",array(
-				new AvocadoField("id", "int", false, 10),
-				new AvocadoField("name", "varchar", true, 255),
+				$this->Field1,
+				$this->Field2,
 				new AvocadoField("notes", "text", true, null)
 			));
 
@@ -56,6 +59,30 @@ class TestAvocadoSqlBuilder extends UnitTestCase{
 		$Ret = $Method->invokeArgs($this->Builder, array($this->Destination));
 		$Expected = "CREATE TABLE orders(\n\t'id' int(10) NOT NULL,\n\t'customer_id' int(10) NULL\n)";
 		$this->assertEqual($Ret, $Expected);
+
+	}
+
+	function testFieldToSql(){
+
+		$Method = self::getMethod("fieldToSql");
+
+		$AddSql = "ALTER TABLE people ADD id int(10) NOT NULL;";
+		$UpdateSql = "ALTER TABLE people MODIFY id int(10) NOT NULL;";
+		$IntoTableSql = "'id' int(10) NOT NULL";
+
+		$Table = new AvocadoTable("people", array($this->Field1));
+
+		// Create
+		$Ret = $Method->invokeArgs($this->Builder, array($this->Field1, AvocadoSqlBuilder::CREATE));
+		$this->assertEqual($Ret,$AddSql);
+
+		// Update
+		$Ret = $Method->invokeArgs($this->Builder, array($this->Field1, AvocadoSqlBuilder::ALTER));
+		$this->assertEqual($Ret, $UpdateSql);
+		
+		// IntoTable
+		$Ret = $Method->invokeArgs($this->Builder, array($this->Field1, AvocadoSqlBuilder::INTO_TABLE));
+		$this->assertEqual($Ret, $IntoTableSql);
 
 	}
 

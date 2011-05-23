@@ -10,8 +10,9 @@
 class AvocadoSqlBuilder{
 
 	const CREATE = 1;
-	const DELETE = 2;
-	const INTO_TABLE = 3;
+	const ALTER = 2;
+	const DELETE = 3;
+	const INTO_TABLE = 4;
 
 	protected $Diff, $Statements;
 	
@@ -44,7 +45,7 @@ class AvocadoSqlBuilder{
 	 * @return string
 	 * @author paul
 	 **/
-	protected function tableToSql(AvocadoTable $Table, $Action= self::CREATE){
+	protected function tableToSql(AvocadoTable $Table, $Action=self::CREATE){
 		$Sep = "\n\t";
 		$Sql = "CREATE TABLE {$Table->getName()}(";
 		foreach($Table->getFields() as $Field){
@@ -73,7 +74,7 @@ class AvocadoSqlBuilder{
 									);
 				break;
 				
-			case self::DELETE:
+			case self::ALTER:
 					return sprintf("ALTER TABLE %s MODIFY %s %s(%s) %s;", 
 										$Field->getTable()->getName(),
 										$Field->getName(),
