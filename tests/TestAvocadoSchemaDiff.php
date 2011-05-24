@@ -25,6 +25,66 @@ class TestAvocadoSchemaDiff extends UnitTestCase{
 		$this->Field2 = new AvocadoField("customer_id", "int", true, 10);
 	}
 
+	function testCompareSchemas(){
+
+		// Identical Case
+		// Schema 1
+		$Schema1Array = array(
+				"orders" => array(
+						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
+						array("name"=>"customer_id", "type"=>"int", "nullable"=>true, "length"=>11),
+						array("name"=>"salesperson_id", "type"=>"int", "nullable"=>true, "length"=>11),
+					),
+				"people" => array(
+						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
+						array("name"=>"name", "type"=>"varchar", "nullable"=>false, "length"=>255),
+						array("name"=>"surname", "type"=>"text", "nullable"=>false, "length"=>null),
+					)
+			);
+
+		$this->Schema1 = AvocadoSchema::getInstanceFromArray($Schema1Array);
+
+		// Schema 2
+		$Schema2Array = array(
+				"orders" => array(
+						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
+						array("name"=>"customer_id", "type"=>"int", "nullable"=>true, "length"=>11),
+						array("name"=>"salesperson_id", "type"=>"int", "nullable"=>true, "length"=>11),
+					),
+				"people" => array(
+						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
+						array("name"=>"name", "type"=>"varchar", "nullable"=>false, "length"=>255),
+						array("name"=>"surname", "type"=>"text", "nullable"=>false, "length"=>null),
+					)
+			);
+
+		$this->Schema2 = AvocadoSchema::getInstanceFromArray($Schema2Array);
+
+		$this->Diff = AvocadoSchemaDiff::compareSchemas($this->Schema1, $this->Schema2);
+
+		foreach($this->Diff->getAll() as $Elem){
+			$this->assertTrue(empty($Elem));
+		}
+
+		// Different
+		$Schema3Array = array(
+				"orders2" => array(
+						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
+						array("name"=>"customer_id", "type"=>"int", "nullable"=>true, "length"=>11),
+						array("name"=>"salesperson_id", "type"=>"int", "nullable"=>true, "length"=>11),
+					),
+				"people" => array(
+						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
+						array("name"=>"name", "type"=>"varchar", "nullable"=>false, "length"=>255)
+					)
+			);
+
+		$Schema3 = AvocadoSchema::getInstanceFromArray($Schema3Array);
+		$this->Diff = AvocadoSchemaDiff::compareSchemas($this->Schema1, $Schema3);
+
+
+	}
+
 	function testGetAll(){
 		$this->Diff->addTable($this->Source);
 		$this->Diff->deleteField($this->Field1);

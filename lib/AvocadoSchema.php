@@ -17,7 +17,7 @@ class AvocadoSchema implements ArrayAccess, Iterator{
 	protected $Tables;
 	protected $CurrentKey;
 	
-	function __construct(PDO $Db=null, array $Arr=null){
+	private function __construct(PDO $Db=null, array $Arr=null){
 		$this->Tables = array();
 
 		if($Db && !$Arr)
