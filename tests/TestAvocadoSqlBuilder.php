@@ -66,8 +66,9 @@ class TestAvocadoSqlBuilder extends UnitTestCase{
 
 		$Method = self::getMethod("fieldToSql");
 
-		$AddSql = "ALTER TABLE people ADD id int(10) NOT NULL;";
-		$UpdateSql = "ALTER TABLE people MODIFY id int(10) NOT NULL;";
+		$AddSql = "ALTER TABLE people ADD id int(10) NOT NULL";
+		$UpdateSql = "ALTER TABLE people MODIFY id int(10) NOT NULL";
+		$DeleteSql = "ALTER TABLE people DROP id";
 		$IntoTableSql = "'id' int(10) NOT NULL";
 
 		$Table = new AvocadoTable("people", array($this->Field1));
@@ -79,6 +80,10 @@ class TestAvocadoSqlBuilder extends UnitTestCase{
 		// Update
 		$Ret = $Method->invokeArgs($this->Builder, array($this->Field1, AvocadoSqlBuilder::ALTER));
 		$this->assertEqual($Ret, $UpdateSql);
+
+		// Delete
+		$Ret = $Method->invokeArgs($this->Builder, array($this->Field1, AvocadoSqlBuilder::DELETE));
+		$this->assertEqual($Ret, $DeleteSql);
 		
 		// IntoTable
 		$Ret = $Method->invokeArgs($this->Builder, array($this->Field1, AvocadoSqlBuilder::INTO_TABLE));

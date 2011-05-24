@@ -65,7 +65,7 @@ class AvocadoSqlBuilder{
 
 		switch($Action){
 			case self::CREATE:
-					return sprintf("ALTER TABLE %s ADD %s %s(%s) %s;", 
+					return sprintf("ALTER TABLE %s ADD %s %s(%s) %s", 
 										$Field->getTable()->getName(),
 										$Field->getName(),
 										$Field->getType(),
@@ -75,7 +75,17 @@ class AvocadoSqlBuilder{
 				break;
 				
 			case self::ALTER:
-					return sprintf("ALTER TABLE %s MODIFY %s %s(%s) %s;", 
+					return sprintf("ALTER TABLE %s MODIFY %s %s(%s) %s", 
+										$Field->getTable()->getName(),
+										$Field->getName(),
+										$Field->getType(),
+										$Field->getLength(),
+										$Field->getNullable() ? 'NULL' : 'NOT NULL'
+									);
+				break;
+			
+			case self::DELETE:
+					return sprintf("ALTER TABLE %s DROP %s", 
 										$Field->getTable()->getName(),
 										$Field->getName(),
 										$Field->getType(),
