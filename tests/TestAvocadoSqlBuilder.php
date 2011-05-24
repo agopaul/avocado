@@ -31,14 +31,17 @@ class TestAvocadoSqlBuilder extends UnitTestCase{
 			));
 
 		$this->Diff->addTable($this->Source);
-		//$this->Diff->deleteField($this->Field1);
+		$this->Diff->addField($this->Field1);
+		$this->Diff->deleteField($this->Field1);
 
 		$this->Builder = new AvocadoSqlBuilder($this->Diff);
 	}
 
 	function testBuild(){
 
-		$Expected = "CREATE TABLE people(\n\t'id' int(10) NOT NULL,\n\t'name' varchar(255) NULL,\n\t'notes' text NULL\n)";
+		$Expected = "CREATE TABLE people(\n\t'id' int(10) NOT NULL,\n\t'name' varchar(255) NULL,\n\t'notes' text NULL\n);\n";
+		$Expected .= "ALTER TABLE people ADD id int(10) NOT NULL;\n";
+		$Expected .= "ALTER TABLE people DROP id;";
 
 		$this->assertEqual($this->Builder->build(), $Expected);
 	}

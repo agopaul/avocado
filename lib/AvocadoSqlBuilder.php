@@ -36,7 +36,8 @@ class AvocadoSqlBuilder{
 			$this->Statements[] = $this->fieldToSql($Field, self::DELETE);
 		}
 
-		return implode(";\n", $this->Statements);
+		if($this->Statements)
+			return implode(";\n", $this->Statements).";";
 	}
 
 	/**
