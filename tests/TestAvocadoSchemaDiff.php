@@ -60,7 +60,7 @@ class TestAvocadoSchemaDiff extends UnitTestCase{
 
 		$this->Schema2 = AvocadoSchema::getInstanceFromArray($Schema2Array);
 
-		$this->Diff->compareSchemas($this->Schema1, $this->Schema2);
+		$this->Diff = AvocadoSchemaDiff::compareSchemas($this->Schema1, $this->Schema2);
 
 		foreach($this->Diff->getAll() as $Elem){
 			$this->assertTrue(empty($Elem));
@@ -80,9 +80,8 @@ class TestAvocadoSchemaDiff extends UnitTestCase{
 			);
 
 		$Schema3 = AvocadoSchema::getInstanceFromArray($Schema3Array);
-		$this->Diff->compareSchemas($this->Schema1, $Schema3);
-		
-		
+		$this->Diff = AvocadoSchemaDiff::compareSchemas($this->Schema1, $Schema3);
+
 
 	}
 

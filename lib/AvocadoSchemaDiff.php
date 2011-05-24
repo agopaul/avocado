@@ -27,16 +27,18 @@ class AvocadoSchemaDiff{
 	 * @return void
 	 * @author paul
 	 **/
-	public function compareSchemas(AvocadoSchema $Schema1, AvocadoSchema $Schema2){
+	public static function compareSchemas(AvocadoSchema $Schema1, AvocadoSchema $Schema2){
+
+		$Instance = new self;
 
 		$Tables = array_merge($Schema1->getTables(), $Schema2->getTables());
 
 		foreach($Tables as $Table){
 			if(isset($Schema1[$Table->getName()]) && !isset($Schema2[$Table->getName()])){
-				$this->addTable($Table);
+				$Instance->addTable($Table);
 			}
 			elseif(isset($Schema2[$Table->getName()]) && !isset($Schema1[$Table->getName()])){
-				$this->deleteTable($Table);
+				$Instance->deleteTable($Table);
 			}
 			else{
 
@@ -51,15 +53,16 @@ class AvocadoSchemaDiff{
 					//	$CurrentField->getName()
 
 					if(isset($T1[$Field->getName()]) && !isset($T2[$Field->getName()])){
-						$this->addField($Field);
+						$Instance->addField($Field);
 					}
 					elseif(isset($T2[$Field->getName()]) && !isset($T1[$Field->getName()])){
-						$this->deleteField($Field);
+						$Instance->deleteField($Field);
 					}
 				}
 
 			}
 		}
+		return $Instance;
 	}
 	
 	/**
