@@ -7,21 +7,6 @@
  * @author Paolo Agostinetto <paul.ago@gmail.com>
  **/
 class AvocadoField{
-	
-	/**
-	 * Add field option
-	 **/
-	const ADD_TABLE_FIELD = "ADD_T";
-
-	/**
-	 * Add field option
-	 **/
-	const ADD_FIELD = "ADD";
-	
-	/**
-	 * Update field option
-	 **/
-	const UPDATE_FIELD = "UPD";
 
 	protected $FieldName, $Type, $Nullable, $Length, $Table;
 	
