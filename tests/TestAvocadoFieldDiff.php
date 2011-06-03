@@ -22,6 +22,20 @@ class TestAvocadoFieldDiff extends UnitTestCase{
 		$this->assertEqual($Diff->getNewLength(), 255);
 	}
 
+	function testCompareFieldsException(){
+		$Field3 = new AvocadoField("somethingdifferent", "DATETIME", false, 255);
+
+		try{
+			AvocadoFieldDiff::compareFields($Field3, $this->Destination);
+			$this->fail();
+		}
+		catch(Exception $e){
+			$this->pass();
+		}
+		
+
+	}
+
 }
 
 ?>

@@ -28,6 +28,12 @@ class AvocadoFieldDiff{
 	 **/
 	public static function compareFields(AvocadoField $Source, AvocadoField $Destination){
 		$Instance = new self;
+
+		// Bothe the source end the 
+		// destination should have the same name!
+		
+		if($Source->getName() != $Destination->getName())
+			throw new AvocadoException("Can't provide two completely different fields");
 		
 		if($Source->getType() != $Destination->getType())
 			$Instance->setNewType($Source->getType());
