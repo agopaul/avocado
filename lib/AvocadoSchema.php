@@ -104,7 +104,14 @@ class AvocadoSchema implements ArrayAccess, Iterator{
 		return new self(null, $Arr);
 	}
 	
-	public function getTables(){
+	public function getTables($Associative=false){
+		if($Associative){
+			$App = array();
+			foreach($this->Tables as $Table)
+				$App[$Table->getName()] = $Table;
+			
+			return $App;
+		}
 		return $this->Tables;
 	}
 	
