@@ -102,8 +102,17 @@ class AvocadoTable implements ArrayAccess, Iterator{
 		return $this->Tablename;
 	}
 	
-	public function getFields(){
-		return $this->Fields;
+	public function getFields($Associative=false){
+		if($Associative){
+			$App = array();
+
+			foreach($this->Fields as $Field)
+				$App[$Field->getName()] = $Field;
+
+			return $App;
+		}
+		else
+			return $this->Fields;
 	}
 	
 	/**
@@ -126,10 +135,13 @@ class AvocadoTable implements ArrayAccess, Iterator{
 	 * @return array
 	 * @author paul
 	 **/
-	public function toArray(){
+	public function toArray($Associative=false){ /// TODO :: Test this switch
 		$Fields = array();
 		foreach($this->Fields as $FieldName=>$Field){
-			$Fields[$FieldName] = $Field->toarray();
+			if($Associative)
+				$FieldName = $Field->getName();
+
+			$Fields[$FieldName] = $Field->toArray();
 		}
 		return $Fields;
 	}
