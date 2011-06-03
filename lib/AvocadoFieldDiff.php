@@ -8,7 +8,7 @@
  **/
 class AvocadoFieldDiff{
 	
-	protected $NewType, $NewLength, $NewNullable;
+	protected $NewType, $NewLength, $NewNullable, $Name;
 	
 	/**
 	 * undocumented function
@@ -17,7 +17,8 @@ class AvocadoFieldDiff{
 	 * @author paul
 	 **/
 	function __construct(){
-		$this->NewType = $this->NewLength = $this->NewNullable = null;
+		$this->NewType = $this->NewLength = null;
+		$this->Name = $this->NewNullable = null;
 	}
 
 	/**
@@ -34,6 +35,8 @@ class AvocadoFieldDiff{
 		
 		if($Source->getName() != $Destination->getName())
 			throw new AvocadoException("Can't provide two completely different fields");
+
+		$Instance->setName($Source->getName());
 		
 		if($Source->getType() != $Destination->getType())
 			$Instance->setNewType($Source->getType());
@@ -45,6 +48,26 @@ class AvocadoFieldDiff{
 			$Instance->setNewLength($Source->getLength());
 		
 		return $Instance;
+	}
+
+	/**
+	 * sets the Field name
+	 *
+	 * @return void
+	 * @author paul
+	 **/
+	function setName($Name){
+		$this->Name = $Name;
+	}
+
+	/**
+	 * gets the Field name
+	 *
+	 * @return string
+	 * @author paul
+	 **/
+	function getName(){
+		return $this->Name;
 	}
 
 	/**
