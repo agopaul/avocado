@@ -23,11 +23,7 @@ class TestAvocadoSchemaDiff extends UnitTestCase{
 		$this->Field1 = new AvocadoField("name", "varchar", true, 255);
 
 		$this->Field2 = new AvocadoField("customer_id", "int", true, 10);
-	}
 
-	function testCompareSchemas(){
-
-		// Identical Case
 		// Schema 1
 		$Schema1Array = array(
 				"orders" => array(
@@ -43,6 +39,9 @@ class TestAvocadoSchemaDiff extends UnitTestCase{
 			);
 
 		$this->Schema1 = AvocadoSchema::getInstanceFromArray($Schema1Array);
+	}
+
+	function testCompareSchemasNoDifference(){
 
 		// Schema 2
 		$Schema2Array = array(
@@ -65,6 +64,9 @@ class TestAvocadoSchemaDiff extends UnitTestCase{
 		foreach($this->Diff->getAll() as $Elem){
 			$this->assertTrue(empty($Elem));
 		}
+	}
+
+	function testCompareSchemasWithDifferences(){
 
 		// Different
 		$Schema3Array = array(
@@ -74,14 +76,30 @@ class TestAvocadoSchemaDiff extends UnitTestCase{
 						array("name"=>"salesperson_id", "type"=>"int", "nullable"=>true, "length"=>11),
 					),
 				"people" => array(
-						array("name"=>"id", "type"=>"int", "nullable"=>false, "length"=>11),
-						array("name"=>"name", "type"=>"varchar", "nullable"=>false, "length"=>255)
+						array("name"=>"id", "type"=>"int", "nullable"=>true, "length"=>10),
+						array("name"=>"name", "type"=>"varchar", "nullable"=>false, "length"=>122),
+						array("name"=>"name2", "type"=>"varchar", "nullable"=>false, "length"=>122),
 					)
 			);
 
 		$Schema3 = AvocadoSchema::getInstanceFromArray($Schema3Array);
 		$this->Diff = AvocadoSchemaDiff::compareSchemas($this->Schema1, $Schema3);
 
+		$PlainDiff = $this->Diff->getAll();
+
+		// Table differences
+		$this->assertIdentical(count($PlainDiff["add_tables"]), 1);
+		$this->assertEqual($PlainDiff["add_tables"][0]->getName(), "orders");
+
+		$this->assertIdentical(count($PlainDiff["delete_tables"]), 1);
+		$this->assertEqual($PlainDiff["delete_tables"][0]->getName(), "orders2");
+		
+		// Field differences
+		$this->assertIdentical(count($PlainDiff["add_fields"]), 1);
+		$this->assertEqual($PlainDiff["add_fields"][0]->getName(), "surname");
+
+		$this->assertIdentical(count($PlainDiff["delete_fields"]), 1);
+		$this->assertEqual($PlainDiff["delete_fields"][0]->getName(), "name2");
 
 	}
 

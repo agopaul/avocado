@@ -31,7 +31,7 @@ class AvocadoSchemaDiff{
 
 		$Instance = new self;
 
-		$Tables = array_merge($Schema1->getTables(), $Schema2->getTables());
+		$Tables = array_merge($Schema1->getTables(true), $Schema2->getTables(true));
 
 		foreach($Tables as $Table){
 			if(isset($Schema1[$Table->getName()]) && !isset($Schema2[$Table->getName()])){
@@ -43,20 +43,25 @@ class AvocadoSchemaDiff{
 			else{
 
 				// Compare fields
-				$T1 = $Schema1[$Table->getName()]->getFields();
-				$T2 = $Schema2[$Table->getName()]->getFields();
+				$T1 = $Schema1[$Table->getName()]->getFields(true);
+				$T2 = $Schema2[$Table->getName()]->getFields(true);
 
-				foreach(array_merge($T1, $T2) as $Field){
-					/// TODO :: Check the field properties too
+				foreach($T1+$T2 as $Field){
+					$FieldName = $Field->getName();
 					
-					//foreach($T1 as $CurrentField)
-					//	$CurrentField->getName()
-
-					if(isset($T1[$Field->getName()]) && !isset($T2[$Field->getName()])){
-						$Instance->addField($Field);
+					if(isset($T1[$FieldName]) && !isset($T2[$FieldName])){
+						$Instance->addField($T1[$FieldName]);
 					}
-					elseif(isset($T2[$Field->getName()]) && !isset($T1[$Field->getName()])){
-						$Instance->deleteField($Field);
+					elseif(isset($T2[$FieldName]) && !isset($T1[$FieldName])){
+						$Instance->deleteField($T2[$FieldName]);
+					}
+					else{ 
+						// Field exists on both tables, 
+						// lets compare them
+						$FieldDiff = AvocadofieldDiff::compareFields($T1[$FieldName], $T2[$FieldName]);
+
+						//var_dump($Field->getName(), $FieldDiff);
+
 					}
 				}
 
