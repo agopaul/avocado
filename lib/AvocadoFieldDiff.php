@@ -8,7 +8,8 @@
  **/
 class AvocadoFieldDiff{
 	
-	protected $NewType, $NewLength, $NewNullable, $Name;
+	protected $NewType, $NewLength, $NewNullable;
+	protected $Name, $Field;
 	
 	/**
 	 * undocumented function
@@ -18,7 +19,7 @@ class AvocadoFieldDiff{
 	 **/
 	function __construct(){
 		$this->NewType = $this->NewLength = null;
-		$this->Name = $this->NewNullable = null;
+		$this->Name = $this->NewNullable = $this->Field = null;
 	}
 
 	/**
@@ -37,17 +38,29 @@ class AvocadoFieldDiff{
 			throw new AvocadoException("Can't provide two completely different fields");
 
 		$Instance->setName($Source->getName());
-		
-		if($Source->getType() != $Destination->getType())
+		$Instance->setField($Destination);
+			
+		$Different = false;
+
+		if($Source->getType() != $Destination->getType()){
+			$Different = true;
 			$Instance->setNewType($Source->getType());
+		}
 
-		if($Source->getNullable() != $Destination->getNullable())
+		if($Source->getNullable() != $Destination->getNullable()){
+			$Different = true;
 			$Instance->setNewNullable($Source->getNullable());
+		}
 
-		if($Source->getLength() != $Destination->getLength())
+		if($Source->getLength() != $Destination->getLength()){
+			$Different = true;
 			$Instance->setNewLength($Source->getLength());
+		}
 		
-		return $Instance;
+		if($Different)
+			return $Instance;
+		
+		return false;
 	}
 
 	/**
@@ -68,6 +81,26 @@ class AvocadoFieldDiff{
 	 **/
 	function getName(){
 		return $this->Name;
+	}
+
+	/**
+	 * sets the destination Field
+	 *
+	 * @return void
+	 * @author paul
+	 **/
+	function setField($Field){
+		$this->Field = $Field;
+	}
+
+	/**
+	 * gets the destination Field
+	 *
+	 * @return string
+	 * @author paul
+	 **/
+	function getField(){
+		return $this->Field;
 	}
 
 	/**
