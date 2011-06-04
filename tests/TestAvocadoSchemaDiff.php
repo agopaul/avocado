@@ -61,8 +61,9 @@ class TestAvocadoSchemaDiff extends UnitTestCase{
 
 		$this->Diff = AvocadoSchemaDiff::compareSchemas($this->Schema1, $this->Schema2);
 
-		foreach($this->Diff->getAll() as $Elem){
-			$this->assertTrue(empty($Elem));
+		foreach($this->Diff->getAll() as $Key=>$Elem){
+			if($Key != "alter_fields")
+				$this->assertTrue(empty($Elem));
 		}
 	}
 
@@ -100,6 +101,14 @@ class TestAvocadoSchemaDiff extends UnitTestCase{
 
 		$this->assertIdentical(count($PlainDiff["delete_fields"]), 1);
 		$this->assertEqual($PlainDiff["delete_fields"][0]->getName(), "name2");
+
+		// Modified Fields
+		$this->assertIdentical(count($PlainDiff["alter_fields"]), 2);
+		$this->assertEqual($PlainDiff["alter_fields"][0]->getName(), "id");
+		$this->assertIdentical($PlainDiff["alter_fields"][0]->getNewNullable(), false);
+
+		$this->assertEqual($PlainDiff["alter_fields"][1]->getName(), "name");
+		$this->assertIdentical($PlainDiff["alter_fields"][1]->getNewLength(), 255);
 
 	}
 

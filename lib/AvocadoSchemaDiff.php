@@ -19,6 +19,7 @@ class AvocadoSchemaDiff{
 	function __construct(){
 		$this->addTable = $this->deleteTable = array();
 		$this->addField = $this->deleteField = array();
+		$this->alterField = array();
 	}
 
 	/**
@@ -59,6 +60,9 @@ class AvocadoSchemaDiff{
 						// Field exists on both tables, 
 						// lets compare them
 						$FieldDiff = AvocadofieldDiff::compareFields($T1[$FieldName], $T2[$FieldName]);
+						
+						if($FieldDiff)
+							$Instance->alterField($FieldDiff);
 
 						//var_dump($Field->getName(), $FieldDiff);
 
@@ -101,13 +105,23 @@ class AvocadoSchemaDiff{
 	}
 	
 	/**
-	 * Insert a new Field which firstSchema doesn't have
+	 * Delete a Field which firstSchema doesn't have
 	 *
 	 * @return void
 	 * @author paul
 	 **/
 	function deleteField(AvocadoField $Field){
 		$this->deleteField[] = $Field;
+	}
+
+	/**
+	 * Alter/Update field properties
+	 *
+	 * @return void
+	 * @author paul
+	 **/
+	function alterField(AvocadoFieldDiff $FieldDiff){
+		$this->alterField[] = $FieldDiff;
 	}
 
 	/**
@@ -120,10 +134,11 @@ class AvocadoSchemaDiff{
 	function getAll(){
 
 		return array(
-				"add_tables" => $this->addTable,
-				"add_fields" => $this->addField,
-				"delete_tables" => $this->deleteTable,
-				"delete_fields" => $this->deleteField
+				"add_tables"	=> $this->addTable,
+				"add_fields"	=> $this->addField,
+				"delete_tables"	=> $this->deleteTable,
+				"delete_fields"	=> $this->deleteField,
+				"alter_fields"	=> $this->alterField
 			);
 	}
 

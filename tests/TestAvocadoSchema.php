@@ -65,6 +65,8 @@ class TestAvocadoSchema extends UnitTestCase{
 			);
 		$Schema = AvocadoSchema::getInstanceFromArray($Input);
 		$this->assertIdentical($Schema->toArray(), $Input);
+
+		/// TODO :: Test toArray switch
 	}
 
 	// ArrayAccess Interface
