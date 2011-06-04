@@ -38,7 +38,7 @@ class AvocadoFieldDiff{
 			throw new AvocadoException("Can't provide two completely different fields");
 
 		$Instance->setName($Source->getName());
-		$Instance->setField($Destination);
+		$Instance->setField($Source);
 			
 		$Different = false;
 
