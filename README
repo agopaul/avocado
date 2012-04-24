@@ -3,12 +3,13 @@ Avocado is a PHP library which handles two database differences, written with OO
 DETAIL:
 	Avocado will provide a simple interface to:
 		* Manage Rails-style migrations
-		* Auto-create migrations and raw sql from the differences of 
-		  two existing schemas, in order to upgrade legacy dbs
+		* Auto-create migrations and raw sql from the differences of the current
+		  schema and the previous version
 
 ROADMAP:
-	* Semiautomatic schema migration
+	* Handle indexes, field/table encoding
+	* Handle other MySQL-specific field/table properties (AUTO_INCREMENT, database engine, etc)
+	* Automatic schema migration: generate diff between current schema and the previous
+	  version or older, generate SQL and do schema migration
+	* Interactive CLI frontend
 	* Database agnostic
-	* Web frontend
-	* Cli frontend, interactive/full-automatic
-	* Strong compatibility with PHP 5.1
